@@ -22,29 +22,23 @@ class Employe
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\Column]
-    private ?int $role = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $contrat = null;
-
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date_entree = null;
+
     #[ORM\Column(length: 255)]
-    private ?string $password = null;
+    private ?string $statut = null;
 
     #[ORM\Column]
     private ?bool $actif = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $dateArrivee = null;
-
     /**
      * @var Collection<int, Projet>
      */
-    #[ORM\ManyToMany(targetEntity: Projet::class, inversedBy: 'employes')]
-    private Collection $projet;
+    #[ORM\ManyToMany(targetEntity: Projet::class, mappedBy: 'employe')]
+    private Collection $projets;
 
     /**
      * @var Collection<int, Tache>
@@ -52,17 +46,10 @@ class Employe
     #[ORM\OneToMany(targetEntity: Tache::class, mappedBy: 'employe')]
     private Collection $taches;
 
-    /**
-     * @var Collection<int, Creneau>
-     */
-    #[ORM\OneToMany(targetEntity: Creneau::class, mappedBy: 'employe')]
-    private Collection $creneaus;
-
     public function __construct()
     {
-        $this->projet = new ArrayCollection();
+        $this->projets = new ArrayCollection();
         $this->taches = new ArrayCollection();
-        $this->creneaus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -94,30 +81,6 @@ class Employe
         return $this;
     }
 
-    public function getRole(): ?int
-    {
-        return $this->role;
-    }
-
-    public function setRole(int $role): static
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
-    public function getContrat(): ?string
-    {
-        return $this->contrat;
-    }
-
-    public function setContrat(string $contrat): static
-    {
-        $this->contrat = $contrat;
-
-        return $this;
-    }
-
     public function getEmail(): ?string
     {
         return $this->email;
@@ -130,14 +93,26 @@ class Employe
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function getDateEntree(): ?\DateTimeInterface
     {
-        return $this->password;
+        return $this->date_entree;
     }
 
-    public function setPassword(string $password): static
+    public function setDateEntree(\DateTimeInterface $date_entree): static
     {
-        $this->password = $password;
+        $this->date_entree = $date_entree;
+
+        return $this;
+    }
+
+    public function getStatut(): ?string
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(string $statut): static
+    {
+        $this->statut = $statut;
 
         return $this;
     }
@@ -154,30 +129,19 @@ class Employe
         return $this;
     }
 
-    public function getDateArrivee(): ?\DateTimeInterface
-    {
-        return $this->dateArrivee;
-    }
-
-    public function setDateArrivee(\DateTimeInterface $dateArrivee): static
-    {
-        $this->dateArrivee = $dateArrivee;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Projet>
      */
-    public function getProjet(): Collection
+    public function getProjets(): Collection
     {
-        return $this->projet;
+        return $this->projets;
     }
 
     public function addProjet(Projet $projet): static
     {
-        if (!$this->projet->contains($projet)) {
-            $this->projet->add($projet);
+        if (!$this->projets->contains($projet)) {
+            $this->projets->add($projet);
+            $projet->addEmploye($this);
         }
 
         return $this;
@@ -185,7 +149,9 @@ class Employe
 
     public function removeProjet(Projet $projet): static
     {
-        $this->projet->removeElement($projet);
+        if ($this->projets->removeElement($projet)) {
+            $projet->removeEmploye($this);
+        }
 
         return $this;
     }
@@ -214,36 +180,6 @@ class Employe
             // set the owning side to null (unless already changed)
             if ($tach->getEmploye() === $this) {
                 $tach->setEmploye(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Creneau>
-     */
-    public function getCreneaus(): Collection
-    {
-        return $this->creneaus;
-    }
-
-    public function addCreneau(Creneau $creneau): static
-    {
-        if (!$this->creneaus->contains($creneau)) {
-            $this->creneaus->add($creneau);
-            $creneau->setEmploye($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCreneau(Creneau $creneau): static
-    {
-        if ($this->creneaus->removeElement($creneau)) {
-            // set the owning side to null (unless already changed)
-            if ($creneau->getEmploye() === $this) {
-                $creneau->setEmploye(null);
             }
         }
 

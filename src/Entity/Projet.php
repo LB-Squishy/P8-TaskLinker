@@ -16,7 +16,7 @@ class Projet
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    private ?string $titre = null;
 
     #[ORM\Column]
     private ?bool $archive = null;
@@ -24,8 +24,8 @@ class Projet
     /**
      * @var Collection<int, Employe>
      */
-    #[ORM\ManyToMany(targetEntity: Employe::class, mappedBy: 'projet')]
-    private Collection $employes;
+    #[ORM\ManyToMany(targetEntity: Employe::class, inversedBy: 'projets')]
+    private Collection $employe;
 
     /**
      * @var Collection<int, Tache>
@@ -33,24 +33,10 @@ class Projet
     #[ORM\OneToMany(targetEntity: Tache::class, mappedBy: 'projet', orphanRemoval: true)]
     private Collection $taches;
 
-    /**
-     * @var Collection<int, Statut>
-     */
-    #[ORM\OneToMany(targetEntity: Statut::class, mappedBy: 'projet', orphanRemoval: true)]
-    private Collection $statuts;
-
-    /**
-     * @var Collection<int, Tag>
-     */
-    #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'projet', orphanRemoval: true)]
-    private Collection $tags;
-
     public function __construct()
     {
-        $this->employes = new ArrayCollection();
+        $this->employe = new ArrayCollection();
         $this->taches = new ArrayCollection();
-        $this->statuts = new ArrayCollection();
-        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -58,14 +44,14 @@ class Projet
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getTitre(): ?string
     {
-        return $this->nom;
+        return $this->titre;
     }
 
-    public function setNom(string $nom): static
+    public function setTitre(string $titre): static
     {
-        $this->nom = $nom;
+        $this->titre = $titre;
 
         return $this;
     }
@@ -85,16 +71,15 @@ class Projet
     /**
      * @return Collection<int, Employe>
      */
-    public function getEmployes(): Collection
+    public function getEmploye(): Collection
     {
-        return $this->employes;
+        return $this->employe;
     }
 
     public function addEmploye(Employe $employe): static
     {
-        if (!$this->employes->contains($employe)) {
-            $this->employes->add($employe);
-            $employe->addProjet($this);
+        if (!$this->employe->contains($employe)) {
+            $this->employe->add($employe);
         }
 
         return $this;
@@ -102,9 +87,7 @@ class Projet
 
     public function removeEmploye(Employe $employe): static
     {
-        if ($this->employes->removeElement($employe)) {
-            $employe->removeProjet($this);
-        }
+        $this->employe->removeElement($employe);
 
         return $this;
     }
@@ -133,66 +116,6 @@ class Projet
             // set the owning side to null (unless already changed)
             if ($tach->getProjet() === $this) {
                 $tach->setProjet(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Statut>
-     */
-    public function getStatuts(): Collection
-    {
-        return $this->statuts;
-    }
-
-    public function addStatut(Statut $statut): static
-    {
-        if (!$this->statuts->contains($statut)) {
-            $this->statuts->add($statut);
-            $statut->setProjet($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStatut(Statut $statut): static
-    {
-        if ($this->statuts->removeElement($statut)) {
-            // set the owning side to null (unless already changed)
-            if ($statut->getProjet() === $this) {
-                $statut->setProjet(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Tag>
-     */
-    public function getTags(): Collection
-    {
-        return $this->tags;
-    }
-
-    public function addTag(Tag $tag): static
-    {
-        if (!$this->tags->contains($tag)) {
-            $this->tags->add($tag);
-            $tag->setProjet($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTag(Tag $tag): static
-    {
-        if ($this->tags->removeElement($tag)) {
-            // set the owning side to null (unless already changed)
-            if ($tag->getProjet() === $this) {
-                $tag->setProjet(null);
             }
         }
 
