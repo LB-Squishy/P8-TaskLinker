@@ -6,6 +6,7 @@ use App\Repository\ProjetRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProjetRepository::class)]
 class Projet
@@ -16,9 +17,11 @@ class Projet
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le titre ne peut pas être vide.")]
     private ?string $titre = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank()]
     private ?bool $archive = null;
 
     /**

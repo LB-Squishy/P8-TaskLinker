@@ -6,6 +6,7 @@ use App\Enum\TacheStatut;
 use App\Repository\TacheRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TacheRepository::class)]
 class Tache
@@ -16,15 +17,23 @@ class Tache
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le titre ne peut pas être vide.")]
     private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Length(min: 10, minMessage: "La description doit faire au moins {{ limit }} caractères.")]
+    #[Assert\Length(max: 1000, maxMessage: "La description doit faire au maximum {{ limit }} caractères.")]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Assert\Type(type: \DateTimeInterface::class, message: "La date limite doit être une date.")]
+    #[Assert\GreaterThan('today', message: "La date limite doit être dans le futur.")]
     private ?\DateTimeInterface $deadline = null;
 
     #[ORM\Column(enumType: TacheStatut::class)]
+    #[Assert\NotBlank(message: "Le statut ne peut pas être vide.")]
+    #[Assert\Choice(callback: [TacheStatut::class, 'toArray'], message: "Le statut doit être parmi {{ choices }}.")]
+    #[Assert\Type(type: TacheStatut::class, message: "Le statut doit être une valeur valide.")]
     private ?TacheStatut $statut = null;
 
     #[ORM\ManyToOne(inversedBy: 'taches')]

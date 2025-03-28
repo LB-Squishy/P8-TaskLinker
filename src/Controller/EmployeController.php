@@ -2,18 +2,28 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\EmployeRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+#[Route('/employes')]
 final class EmployeController extends AbstractController
 {
-    #[Route('/employes', name: 'app_employes')]
+    public function __construct(
+        private EmployeRepository $employeRepository,
+        private EntityManagerInterface $entityManagerInterface,
+    ) {}
+
+    #[Route('', name: 'app_employes', methods: ['GET'])]
     public function index(): Response
     {
+        $employes = $this->employeRepository->findAll();
+
         return $this->render('employe/index.html.twig', [
-            'controller_name' => 'EmployeController',
             'current_page' => 'employes',
+            'employes' => $employes,
         ]);
     }
 }

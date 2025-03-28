@@ -19,72 +19,30 @@
                 </tr>
             </thead>
             <tbody>
+                {% for employe in employes %}
                 <tr>
-                <td>
-                    <div class="employee-infos">
-                        <div class="employee-avatar">
-                            ND
+                    <td>
+                        <div class="employee-infos">
+                            <div class="employee-avatar">
+                                {{ employe.prenom | first }}{{ employe.nom | first }}
+                            </div>
+                            <div class="employee-coords">
+                                <strong>{{ employe.prenom }} {{ employe.nom }}</strong>
+                                <span>{{ employe.email }}</span>
+                            </div>
                         </div>
-                        <div class="employee-coords">
-                            <strong>Natalie Dillon</strong>
-                            <span>natalie@driblet.com</span>
-                        </div>
-                    </div>
-                </td>
-                <td>CDI</td>
-                <td>
-                    <a class="button button-edit-team" href="employe.html">
-                    Éditer
-                    </a>
-                    <a class="delete-team" href="#">
-                    Supprimer
-                    </a>
-                </td>
+                    </td>
+                    <td>{{ employe.statut }}</td>
+                    <td>
+                        <a class="button button-edit-team" href="#">
+                        Éditer
+                        </a>
+                        <a class="delete-team" href="#">
+                        Supprimer
+                        </a>
+                    </td>
                 </tr>
-                <tr>
-                <td>
-                    <div class="employee-infos">
-                        <div class="employee-avatar">
-                            DB
-                        </div>
-                        <div class="employee-coords">
-                            <strong>Demi Baker</strong>
-                            <span>demi@driblet.com</span>
-                        </div>
-                    </div>
-                </td>
-                <td>CDD</td>
-                <td>
-                    <a class="button button-edit-team" href="employe.html">
-                    Éditer
-                    </a>
-                    <a class="delete-team" href="#">
-                    Supprimer
-                    </a>
-                </td>
-                </tr>
-                <tr>
-                <td>
-                    <div class="employee-infos">
-                        <div class="employee-avatar">
-                            MD
-                        </div>
-                        <div class="employee-coords">
-                            <strong>Marie Dupont</strong>
-                            <span>marie@driblet.com</span>
-                        </div>
-                    </div>
-                </td>
-                <td>Freelance</td>
-                <td>
-                    <a class="button button-edit-team" href="employe.html">
-                    Éditer
-                    </a>
-                    <a class="delete-team" href="#">
-                    Supprimer
-                    </a>
-                </td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
