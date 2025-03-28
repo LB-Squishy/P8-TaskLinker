@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{projet.titre}} - TaskLinker
+{% endblock %}
+
+{% block header_content %}
+    <div class="flex-header">
+        <h1>{{projet.titre}}</h1>
+        <div class="user-list">
+            {% if projet.employe is not null %}
+                {% for employe in projet.employe %}
+                <div class="avatar">{{ employe.prenom | first }}{{ employe.nom | first }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <a class="button" href="#">Modifier</a>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div id="content">
+        <div id="tasks-container">
+        {% for statut in statuts %}
+            <div class="task-column">
+                <h2>{{statut.value}}</h2>
+                <div class="tasks-list">
+                    {% for tache in taches %}
+                        {% if tache.statut.value == statut.value %}
+                            <a class="task" href="tache.html">
+                                <h3>{{tache.titre}}</h3>
+                                <p>{{tache.description}}</p>
+                                <div class="task-infos">
+                                    <div class="task-deadline">
+                                        <i class="fa-regular fa-calendar"></i> {{tache.deadline | date('d/m/Y')}}
+                                    </div>
+                                    {% if tache.employe is not null %}
+                                        <div class="mini-user">
+                                            {{ tache.employe.prenom | first }}{{ tache.employe.nom | first }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                    <a href="tache-add.html" class="task-add">
+                        + Ajouter une tâche
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}

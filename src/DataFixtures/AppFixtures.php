@@ -42,25 +42,45 @@ class AppFixtures extends Fixture
                 ->setActif($faker->boolean(80));
             $manager->persist($employe);
             $employes[] = $employe;
+        }
 
-            // Ajout des Employes aux Projets
-            $randomProjets = $faker->randomElements($projets, $faker->numberBetween(1, 3));
-            foreach ($randomProjets as $projet) {
+        // Assignation des Employes aux Projets (au moins 2 employés par projet)
+        foreach ($projets as $projet) {
+            $assignedEmployes = $faker->randomElements($employes, $faker->numberBetween(2, 5));
+            foreach ($assignedEmployes as $employe) {
+                $projet->addEmploye($employe);
                 $employe->addProjet($projet);
             }
         }
 
-        // Création des Taches
-        for ($i = 0; $i < 20; $i++) {
-            $tache = new Tache();
-            $tache
-                ->setTitre($faker->sentence(3))
-                ->setDescription($faker->paragraph())
-                ->setDeadline($faker->dateTimeBetween('now', '+5 years'))
-                ->setStatut($faker->randomElement([TacheStatut::TO_DO, TacheStatut::DOING, TacheStatut::DONE]))
-                ->setProjet($faker->randomElement($projets))
-                ->setEmploye($faker->randomElement($employes));
-            $manager->persist($tache);
+        // Création des Taches (au moins une tâche par statut pour chaque projet)
+        foreach ($projets as $projet) {
+            $projectEmployes = $projet->getEmploye()->toArray(); // Employés assignés au projet
+
+            foreach (TacheStatut::cases() as $statut) {
+                $tache = new Tache();
+                $tache
+                    ->setTitre($faker->sentence(3))
+                    ->setDescription($faker->paragraph())
+                    ->setDeadline($faker->dateTimeBetween('now', '+5 years'))
+                    ->setStatut($statut)
+                    ->setProjet($projet)
+                    ->setEmploye($faker->randomElement($projectEmployes)); // Employé assigné au projet
+                $manager->persist($tache);
+            }
+
+            // Ajout de tâches supplémentaires (optionnel)
+            for ($i = 0; $i < $faker->numberBetween(1, 5); $i++) {
+                $tache = new Tache();
+                $tache
+                    ->setTitre($faker->sentence(3))
+                    ->setDescription($faker->paragraph())
+                    ->setDeadline($faker->dateTimeBetween('now', '+5 years'))
+                    ->setStatut($faker->randomElement(TacheStatut::cases()))
+                    ->setProjet($projet)
+                    ->setEmploye($faker->randomElement($projectEmployes)); // Employé assigné au projet
+                $manager->persist($tache);
+            }
         }
 
         $manager->flush();

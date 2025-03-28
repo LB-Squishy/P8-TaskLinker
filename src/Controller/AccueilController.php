@@ -16,7 +16,7 @@ final class AccueilController extends AbstractController
     #[Route('/', name: 'app_accueil', methods: ['GET'])]
     public function index(): Response
     {
-        $projets = $this->projetRepository->findAll();
+        $projets = $this->projetRepository->findAllIsNotArchive();
 
         return $this->render('accueil/index.html.twig', [
             'current_page' => 'accueil',

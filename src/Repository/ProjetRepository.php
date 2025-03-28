@@ -16,6 +16,19 @@ class ProjetRepository extends ServiceEntityRepository
         parent::__construct($registry, Projet::class);
     }
 
+    /**
+     * @return Projets[] Returns an array of Projets objects
+     */
+    public function findAllIsNotArchive(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.archive = false')
+            ->orderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Projet[] Returns an array of Projet objects
     //     */
