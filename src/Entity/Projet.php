@@ -21,8 +21,7 @@ class Projet
     private ?string $titre = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank()]
-    private ?bool $archive = null;
+    private ?bool $archive = false;
 
     /**
      * @var Collection<int, Employe>

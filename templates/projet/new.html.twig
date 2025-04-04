@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Nouveau Projet - TaskLinker
+{% endblock %}
+
+{% block header_content %}
+    <div class="flex-header">
+        <h1>Nouveau projet</h1>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div id="content">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <div>
+            <br>
+            <button type="submit" class="button button-submit">Continuer</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
