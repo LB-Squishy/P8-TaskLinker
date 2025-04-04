@@ -69,7 +69,7 @@ class AppFixtures extends Fixture
                 $manager->persist($tache);
             }
 
-            // Ajout de tâches supplémentaires (optionnel)
+            // Ajout de tâches supplémentaires
             for ($i = 0; $i < $faker->numberBetween(1, 5); $i++) {
                 $tache = new Tache();
                 $tache

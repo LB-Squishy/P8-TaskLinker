@@ -24,6 +24,7 @@ final class ProjetController extends AbstractController
     {
         $projet = $this->projetRepository->find($id);
         if (!$projet) {
+            $this->addFlash('error', 'Ce projet n\'existe pas.');
             return $this->redirectToRoute('app_accueil');
         }
         // if ($projet->isArchive()) {
@@ -37,5 +38,23 @@ final class ProjetController extends AbstractController
             'taches' => $taches,
             'statuts' => TacheStatut::cases(),
         ]);
+    }
+
+    #[Route('/{id}/delete', name: 'app_projet_delete', methods: ['GET'])]
+    public function deleteProjet(int $id): Response
+    {
+        $projet = $this->projetRepository->find($id);
+
+        if (!$projet) {
+            $this->addFlash('error', 'Ce projet n\'existe pas.');
+            return $this->redirectToRoute('app_accueil');
+        }
+
+        $projet->setArchive(true);
+        $this->entityManagerInterface->persist($projet);
+        $this->entityManagerInterface->flush();
+        $this->addFlash('success', 'Le projet a été archivé avec succès.');
+
+        return $this->redirectToRoute('app_accueil');
     }
 }
