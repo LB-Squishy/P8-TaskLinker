@@ -80,4 +80,30 @@ final class ProjetController extends AbstractController
 
         return $this->redirectToRoute('app_accueil');
     }
+
+    #[Route('/{id}/edit', name: 'app_projet_edit', methods: ['GET', 'POST'])]
+    public function editProjet(int $id, Request $request): Response
+    {
+        $projet = $this->projetRepository->find($id);
+
+        if (!$projet) {
+            $this->addFlash('error', 'Ce projet n\'existe pas.');
+            return $this->redirectToRoute('app_accueil');
+        }
+
+        $form = $this->createForm(ProjetType::class, $projet);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $projet = $form->getData();
+            $this->entityManagerInterface->persist($projet);
+            $this->entityManagerInterface->flush();
+            $this->addFlash('success', 'Le projet a été créé avec succès.');
+            return $this->redirectToRoute('app_projet_show', ['id' => $projet->getId()]);
+        }
+        return $this->render('projet/new.html.twig', [
+            'current_page' => 'projet.name',
+            'form' => $form,
+        ]);
+    }
 }
