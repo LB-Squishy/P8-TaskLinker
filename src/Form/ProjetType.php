@@ -20,6 +20,9 @@ class ProjetType extends AbstractType
                 'label' => 'Titre du projet',
                 'required' => true,
             ])
+            // ->add('archive', CheckboxType::class, [
+            //     'label' => 'Archiver',
+            // ])
             ->add('employe', EntityType::class, [
                 'class' => Employe::class,
                 'label' => 'Inviter des membres',

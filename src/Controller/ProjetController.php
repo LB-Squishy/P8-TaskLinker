@@ -63,7 +63,7 @@ final class ProjetController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'app_projet_delete', methods: ['GET'])]
+    #[Route('/{id}/delete', name: 'app_projet_delete', methods: ['GET', 'POST'])]
     public function deleteProjet(int $id): Response
     {
         $projet = $this->projetRepository->find($id);
@@ -98,7 +98,7 @@ final class ProjetController extends AbstractController
             $projet = $form->getData();
             $this->entityManagerInterface->persist($projet);
             $this->entityManagerInterface->flush();
-            $this->addFlash('success', 'Le projet a été créé avec succès.');
+            $this->addFlash('success', 'Le projet a été modifié avec succès.');
             return $this->redirectToRoute('app_projet_show', ['id' => $projet->getId()]);
         }
         return $this->render('projet/new.html.twig', [

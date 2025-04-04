@@ -41,8 +41,7 @@ class Employe
     private ?string $statut = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank()]
-    private ?bool $actif = null;
+    private ?bool $actif = true;
 
     /**
      * @var Collection<int, Projet>

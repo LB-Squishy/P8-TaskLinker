@@ -16,6 +16,19 @@ class EmployeRepository extends ServiceEntityRepository
         parent::__construct($registry, Employe::class);
     }
 
+    /**
+     * @return Employes[] Returns an array of Employes objects
+     */
+    public function findAllIsActif(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.actif = true')
+            ->orderBy('e.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Employe[] Returns an array of Employe objects
     //     */
