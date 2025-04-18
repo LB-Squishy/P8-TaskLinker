@@ -55,9 +55,7 @@ final class ProjetController extends AbstractController
             $this->addFlash('error', 'Ce projet n\'existe pas.');
             return $this->redirectToRoute('app_accueil');
         }
-        // if ($projet->isArchive()) {
-        //     return $this->redirectToRoute('app_accueil');
-        // }
+
         $taches = $projet->getTaches();
 
         return $this->render('projet/show.html.twig', [
@@ -72,7 +70,6 @@ final class ProjetController extends AbstractController
     public function deleteProjet(int $id): Response
     {
         $projet = $this->projetRepository->find($id);
-
         if (!$projet) {
             $this->addFlash('error', 'Ce projet n\'existe pas.');
             return $this->redirectToRoute('app_accueil');
@@ -90,7 +87,6 @@ final class ProjetController extends AbstractController
     public function editProjet(int $id, Request $request): Response
     {
         $projet = $this->projetRepository->find($id);
-
         if (!$projet) {
             $this->addFlash('error', 'Ce projet n\'existe pas.');
             return $this->redirectToRoute('app_accueil');
@@ -109,6 +105,7 @@ final class ProjetController extends AbstractController
             $this->addFlash('success', 'Le projet a été modifié avec succès.');
             return $this->redirectToRoute('app_projet_show', ['id' => $projet->getId()]);
         }
+
         return $this->render('projet/new.html.twig', [
             'current_page' => 'projet.name',
             'form' => $form,

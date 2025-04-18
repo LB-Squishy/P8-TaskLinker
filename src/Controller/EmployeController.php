@@ -32,7 +32,6 @@ final class EmployeController extends AbstractController
     public function deleteEmploye(int $id): Response
     {
         $employe = $this->employeRepository->find($id);
-
         if (!$employe) {
             $this->addFlash('error', 'Cet employé n\'existe pas.');
             return $this->redirectToRoute('app_accueil');
@@ -58,7 +57,6 @@ final class EmployeController extends AbstractController
     public function editEmploye(int $id, Request $request): Response
     {
         $employe = $this->employeRepository->find($id);
-
         if (!$employe) {
             $this->addFlash('error', 'Cet employé n\'existe pas.');
             return $this->redirectToRoute('app_accueil');
@@ -74,6 +72,7 @@ final class EmployeController extends AbstractController
             $this->addFlash('success', 'L\'employé a été modifié avec succès.');
             return $this->redirectToRoute('app_employe_edit', ['id' => $employe->getId()]);
         }
+
         return $this->render('employe/edit.html.twig', [
             'current_page' => 'employes',
             'employe' => $employe,

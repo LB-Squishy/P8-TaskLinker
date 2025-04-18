@@ -31,7 +31,6 @@ final class TacheController extends AbstractController
         }
 
         $employes = $projet->getEmploye();
-
         $tache = new Tache();
         $form = $this->createForm(TacheType::class, $tache, [
             'employes' => $employes,
@@ -47,6 +46,7 @@ final class TacheController extends AbstractController
             $this->addFlash('success', 'La tâche a été créée avec succès.');
             return $this->redirectToRoute('app_projet_show', ['id' => $projetId]);
         }
+
         return $this->render('tache/new.html.twig', [
             'current_page' => 'tache.name',
             'form' => $form,
@@ -59,14 +59,12 @@ final class TacheController extends AbstractController
     public function deleteTache(int $tacheId): Response
     {
         $tache = $this->tacheRepository->find($tacheId);
-
         if (!$tache) {
             $this->addFlash('error', 'Cette tâche n\'existe pas.');
             return $this->redirectToRoute('app_accueil');
         }
 
         $projet = $tache->getProjet();
-
         $this->entityManagerInterface->remove($tache);
         $this->entityManagerInterface->flush();
         $this->addFlash('success', 'La tâche a été supprimée avec succès.');
@@ -97,6 +95,7 @@ final class TacheController extends AbstractController
             $this->addFlash('success', 'La tâche a été modifié avec succès.');
             return $this->redirectToRoute('app_projet_show', ['id' => $projet->getId()]);
         }
+
         return $this->render('tache/edit.html.twig', [
             'current_page' => 'tache.name',
             'form' => $form,
