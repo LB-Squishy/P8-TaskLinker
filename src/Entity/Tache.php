@@ -31,9 +31,8 @@ class Tache
     private ?\DateTimeInterface $deadline = null;
 
     #[ORM\Column(enumType: TacheStatut::class)]
-    #[Assert\NotBlank(message: "Le statut ne peut pas être vide.")]
-    #[Assert\Choice(callback: [TacheStatut::class, 'toArray'], message: "Le statut doit être parmi {{ choices }}.")]
-    #[Assert\Type(type: TacheStatut::class, message: "Le statut doit être une valeur valide.")]
+    #[Assert\NotNull(message: "Le statut ne peut pas être nul.")]
+    #[Assert\Choice(callback: [TacheStatut::class, 'cases'], message: "Le statut doit être parmi {{ choices }}.")]
     private ?TacheStatut $statut = null;
 
     #[ORM\ManyToOne(inversedBy: 'taches')]
