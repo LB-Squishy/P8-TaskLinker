@@ -26,7 +26,7 @@ class TacheType extends AbstractType
             ])
             ->add('description', TextType::class, [
                 'label' => 'Description',
-                'required' => true,
+                'required' => false,
             ])
             ->add('deadline', DateType::class, [
                 'label' => 'Date',
@@ -40,6 +40,7 @@ class TacheType extends AbstractType
                 'choice_value' => fn(?TacheStatut $statut) => $statut?->value,
                 'expanded' => false,
                 'multiple' => false,
+                'required' => true,
                 'attr' => [
                     'class' => 'select2',
                 ],
@@ -57,6 +58,7 @@ class TacheType extends AbstractType
                 'choices' => $employesAssignes,
                 'multiple' => false,
                 'expanded' => false,
+                'required' => false,
                 'attr' => [
                     'class' => 'select2',
                 ],

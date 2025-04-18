@@ -15,6 +15,7 @@ class ProjetType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $employesActifs = $options['employes'];
         $builder
             ->add('titre', TextType::class, [
                 'label' => 'Titre du projet',
@@ -26,11 +27,13 @@ class ProjetType extends AbstractType
             ->add('employe', EntityType::class, [
                 'class' => Employe::class,
                 'label' => 'Inviter des membres',
+                'choices' => $employesActifs,
                 'choice_label' => function (Employe $employe) {
                     return $employe->getPrenom() . ' ' . $employe->getNom();
                 },
                 'multiple' => true,
                 'expanded' => false,
+                'required' => false,
                 'attr' => [
                     'class' => 'select2',
                 ],
@@ -42,6 +45,7 @@ class ProjetType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Projet::class,
+            'employes' => [],
         ]);
     }
 }

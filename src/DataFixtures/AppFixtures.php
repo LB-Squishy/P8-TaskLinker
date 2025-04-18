@@ -39,7 +39,7 @@ class AppFixtures extends Fixture
                 ->setEmail($faker->email())
                 ->setDateEntree($faker->dateTimeBetween('-5 years', 'now'))
                 ->setStatut($faker->randomElement(['CDI', 'CDD', 'Stage', 'Alternance']))
-                ->setActif($faker->boolean(80));
+                ->setActif($faker->boolean(100));
             $manager->persist($employe);
             $employes[] = $employe;
         }

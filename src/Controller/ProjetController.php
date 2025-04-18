@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Projet;
 use App\Enum\TacheStatut;
 use App\Form\ProjetType;
+use App\Repository\EmployeRepository;
 use App\Repository\ProjetRepository;
 use App\Repository\TacheRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,6 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ProjetController extends AbstractController
 {
     public function __construct(
+        private EmployeRepository $employeRepository,
         private ProjetRepository $projetRepository,
         private TacheRepository $tacheRepository,
         private EntityManagerInterface $entityManagerInterface,
@@ -26,7 +28,10 @@ final class ProjetController extends AbstractController
     public function newProjet(Request $request): Response
     {
         $projet = new Projet();
-        $form = $this->createForm(ProjetType::class, $projet);
+        $employes = $this->employeRepository->findAllIsActif();
+        $form = $this->createForm(ProjetType::class, $projet, [
+            'employes' => $employes,
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -91,7 +96,10 @@ final class ProjetController extends AbstractController
             return $this->redirectToRoute('app_accueil');
         }
 
-        $form = $this->createForm(ProjetType::class, $projet);
+        $employes = $this->employeRepository->findAllIsActif();
+        $form = $this->createForm(ProjetType::class, $projet, [
+            'employes' => $employes,
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

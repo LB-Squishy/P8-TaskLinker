@@ -39,6 +39,14 @@ final class EmployeController extends AbstractController
         }
 
         $employe->setActif(false);
+
+        foreach ($employe->getProjets() as $projet) {
+            $projet->removeEmploye($employe);
+        }
+        foreach ($employe->getTaches() as $tache) {
+            $tache->setEmploye(null);
+        }
+
         $this->entityManagerInterface->persist($employe);
         $this->entityManagerInterface->flush();
         $this->addFlash('success', 'L\'employé a été désactivé avec succès.');
