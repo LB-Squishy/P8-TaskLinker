@@ -21,7 +21,7 @@ final class TacheController extends AbstractController
         private EntityManagerInterface $entityManagerInterface,
     ) {}
 
-    #[Route('/new/{projetId}', name: 'app_tache_new', methods: ['GET', 'POST'])]
+    #[Route('/{projetId}/new', name: 'app_tache_new', methods: ['GET', 'POST'])]
     public function newTache(int $projetId, Request $request): Response
     {
         $projet = $this->projetRepository->find($projetId);
@@ -55,65 +55,52 @@ final class TacheController extends AbstractController
         ]);
     }
 
-    // #[Route('/{id}', name: 'app_projet_show', methods: ['GET'])]
-    // public function index(int $id): Response
-    // {
-    //     $projet = $this->projetRepository->find($id);
-    //     if (!$projet) {
-    //         $this->addFlash('error', 'Ce projet n\'existe pas.');
-    //         return $this->redirectToRoute('app_accueil');
-    //     }
-    //     $taches = $projet->getTaches();
+    #[Route('/{tacheId}/delete', name: 'app_tache_delete', methods: ['GET', 'POST'])]
+    public function deleteTache(int $tacheId): Response
+    {
+        $tache = $this->tacheRepository->find($tacheId);
 
-    //     return $this->render('projet/show.html.twig', [
-    //         'current_page' => 'projet.name',
-    //         'projet' => $projet,
-    //         'taches' => $taches,
-    //         'statuts' => TacheStatut::cases(),
-    //     ]);
-    // }
+        if (!$tache) {
+            $this->addFlash('error', 'Cette tâche n\'existe pas.');
+            return $this->redirectToRoute('app_accueil');
+        }
 
-    // #[Route('/{id}/delete', name: 'app_projet_delete', methods: ['GET', 'POST'])]
-    // public function deleteProjet(int $id): Response
-    // {
-    //     $projet = $this->projetRepository->find($id);
+        $projet = $tache->getProjet();
 
-    //     if (!$projet) {
-    //         $this->addFlash('error', 'Ce projet n\'existe pas.');
-    //         return $this->redirectToRoute('app_accueil');
-    //     }
+        $this->entityManagerInterface->remove($tache);
+        $this->entityManagerInterface->flush();
+        $this->addFlash('success', 'La tâche a été supprimée avec succès.');
 
-    //     $projet->setArchive(true);
-    //     $this->entityManagerInterface->persist($projet);
-    //     $this->entityManagerInterface->flush();
-    //     $this->addFlash('success', 'Le projet a été archivé avec succès.');
+        return $this->redirectToRoute('app_projet_show', ['id' => $projet->getId()]);
+    }
 
-    //     return $this->redirectToRoute('app_accueil');
-    // }
+    #[Route('/{tacheId}/edit', name: 'app_tache_edit', methods: ['GET', 'POST'])]
+    public function editTache(int $tacheId, Request $request): Response
+    {
+        $tache = $this->tacheRepository->find($tacheId);
+        if (!$tache) {
+            $this->addFlash('error', 'Cette tâche n\'existe pas.');
+            return $this->redirectToRoute('app_accueil');
+        }
 
-    // #[Route('/{id}/edit', name: 'app_projet_edit', methods: ['GET', 'POST'])]
-    // public function editProjet(int $id, Request $request): Response
-    // {
-    //     $projet = $this->projetRepository->find($id);
+        $projet = $tache->getProjet();
+        $employes = $projet->getEmploye();
+        $form = $this->createForm(TacheType::class, $tache, [
+            'employes' => $employes,
+        ]);
 
-    //     if (!$projet) {
-    //         $this->addFlash('error', 'Ce projet n\'existe pas.');
-    //         return $this->redirectToRoute('app_accueil');
-    //     }
-
-    //     $form = $this->createForm(ProjetType::class, $projet);
-
-    //     $form->handleRequest($request);
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $projet = $form->getData();
-    //         $this->entityManagerInterface->persist($projet);
-    //         $this->entityManagerInterface->flush();
-    //         $this->addFlash('success', 'Le projet a été modifié avec succès.');
-    //         return $this->redirectToRoute('app_projet_show', ['id' => $projet->getId()]);
-    //     }
-    //     return $this->render('projet/new.html.twig', [
-    //         'current_page' => 'projet.name',
-    //         'form' => $form,
-    //     ]);
-    // }
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $tache = $form->getData();
+            $this->entityManagerInterface->persist($tache);
+            $this->entityManagerInterface->flush();
+            $this->addFlash('success', 'La tâche a été modifié avec succès.');
+            return $this->redirectToRoute('app_projet_show', ['id' => $projet->getId()]);
+        }
+        return $this->render('tache/edit.html.twig', [
+            'current_page' => 'tache.name',
+            'form' => $form,
+            'tache' => $tache,
+        ]);
+    }
 }
